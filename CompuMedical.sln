@@ -3,13 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompuMedical.WebAPI", "CompuMedical.WebAPI\CompuMedical.WebAPI.csproj", "{1DE6CBBE-2A9D-4153-84ED-9C783C4CDD8A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CompuMedical.WebAPI", "CompuMedical.WebAPI\CompuMedical.WebAPI.csproj", "{1DE6CBBE-2A9D-4153-84ED-9C783C4CDD8A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompuMedical.Infrastructure", "CompuMedical.Infrastructure\CompuMedical.Infrastructure.csproj", "{C3459C1A-5D53-4F3B-9DE7-D6D91F059111}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CompuMedical.Infrastructure", "CompuMedical.Infrastructure\CompuMedical.Infrastructure.csproj", "{C3459C1A-5D53-4F3B-9DE7-D6D91F059111}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompuMedical.Core", "CompuMedical.Core\CompuMedical.Core.csproj", "{719F08AA-6D63-49DD-A8A7-8E5F7DFF3CA1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CompuMedical.Core", "CompuMedical.Core\CompuMedical.Core.csproj", "{719F08AA-6D63-49DD-A8A7-8E5F7DFF3CA1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompuMedical.Application", "CompuMedical.Application\CompuMedical.Application.csproj", "{8D75DD34-A8E7-433C-8079-9F4FA1B21CA6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CompuMedical.Application", "CompuMedical.Application\CompuMedical.Application.csproj", "{8D75DD34-A8E7-433C-8079-9F4FA1B21CA6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DB", "DB", "{E11F4B87-0C2A-4587-B7B4-24FC4A163CDE}"
+	ProjectSection(SolutionItems) = preProject
+		CompuMedicalDB.txt = CompuMedicalDB.txt
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
