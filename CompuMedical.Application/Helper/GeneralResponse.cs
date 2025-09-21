@@ -32,4 +32,5 @@ public class GeneralResponse
     public string Message { get; set; }
     public List<string> Errors { get; set; }
     public object Data { get; set; }
+    public string? Token { get; set; }
 }

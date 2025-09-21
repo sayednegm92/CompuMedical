@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using CompuMedical.Application.Dto.Auth;
-
 using CompuMedical.Application.Helper;
 using CompuMedical.Application.Helpers;
+using CompuMedical.Application.IServices.IAuthServices;
 using CompuMedical.Core.Entities;
 using CompuMedical.Core.Helper;
 using Microsoft.AspNetCore.Identity;
@@ -46,7 +46,7 @@ public class AuthService : IAuthService
                 Email = user.Email,
                 Token = Token
             };
-            return _responseHandler.Success(Response);
+            return _responseHandler.ReturnUserData(Response, Token);
 
         }
     }

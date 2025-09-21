@@ -2,6 +2,7 @@
 using CompuMedical.Application.Dto.Invoice;
 using CompuMedical.Application.Dto.Item;
 using CompuMedical.Application.Helper;
+using CompuMedical.Application.IServices.IInvoices;
 using CompuMedical.Core.Entities;
 using CompuMedical.Core.IBasRepository;
 

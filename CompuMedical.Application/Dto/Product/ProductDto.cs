@@ -8,3 +8,10 @@ public class ProductDto
     public decimal UnitPrice { get; set; }
     public Guid? StoreId { get; set; }
 }
+public class GetProductDto
+{
+    public Guid Id { get; set; }
+    public string? Name { get; set; }
+    public int Quantity { get; set; }
+    public decimal UnitPrice { get; set; }
+}

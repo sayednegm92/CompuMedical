@@ -2,7 +2,7 @@
 using CompuMedical.Application.Dto.Auth;
 using CompuMedical.Application.Helper;
 
-namespace CompuMedical.Application.Services.AuthServices;
+namespace CompuMedical.Application.IServices.IAuthServices;
 
 public interface IAuthService
 {

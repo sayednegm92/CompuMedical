@@ -1,5 +1,5 @@
 ﻿using CompuMedical.Application.Dto.Auth;
-using CompuMedical.Application.Services.AuthServices;
+using CompuMedical.Application.IServices.IAuthServices;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CompuMedical.WebApi.Controllers

@@ -16,6 +16,10 @@ public class ApplicationMapperProfiles : Profile
         CreateMap<ItemDto, Item>();
         CreateMap<StoreDto, Store>();
         CreateMap<Item, GetItemDto>();
+        CreateMap<Store, GetStoreDto>()
+         .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.StoreName));
+        CreateMap<Product, GetProductDto>()
+                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.ProductName));
         #endregion
         #region Product
         CreateMap<ProductDto, Product>().ReverseMap();

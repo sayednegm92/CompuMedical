@@ -1,5 +1,5 @@
 ﻿using CompuMedical.Application.Dto.Product;
-using CompuMedical.Application.Services.Products;
+using CompuMedical.Application.IServices.IProducts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

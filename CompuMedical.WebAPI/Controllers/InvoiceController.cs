@@ -1,6 +1,6 @@
 ﻿using CompuMedical.Application.Dto.Invoice;
 using CompuMedical.Application.Helper;
-using CompuMedical.Application.Services.Invoices;
+using CompuMedical.Application.IServices.IInvoices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,7 +8,7 @@ namespace CompuMedical.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class InvoiceController : ControllerBase
     {
         #region Fields
@@ -23,7 +23,7 @@ namespace CompuMedical.WebAPI.Controllers
         #region Actions
 
         [HttpGet("GetAllInvoices")]
-        [Authorize(Roles = "user")]
+        //[Authorize(Roles = "user")]
         public async Task<IActionResult> GetAllInvoices([FromQuery] Creteria request)
         {
             var result = await _service.GetAllInvoices(request);

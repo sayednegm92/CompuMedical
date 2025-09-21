@@ -8,7 +8,7 @@ public class ResponseHandler : IResponseHandler
         {
             StatusCode = System.Net.HttpStatusCode.BadRequest,
             Succeeded = false,
-            Message = Message
+            Message = Message ?? "Done Successfully"
         };
     }
 
@@ -17,28 +17,48 @@ public class ResponseHandler : IResponseHandler
         return new GeneralResponse()
         {
             StatusCode = System.Net.HttpStatusCode.BadRequest,
-            Message = Message
+            Message = Message ?? "Done Successfully"
         };
     }
 
-    public GeneralResponse Success(object entity = null, object Meta = null, string Message = null)
+    public GeneralResponse SuccessMeta(object entity = null, object Meta = null, string Message = null)
     {
         return new GeneralResponse()
         {
             Data = entity,
             StatusCode = System.Net.HttpStatusCode.OK,
             Succeeded = true,
-            Message = Message
+            Message = Message ?? "Done Successfully"
         };
     }
-
+    public GeneralResponse Success(object entity = null, string Message = null)
+    {
+        return new GeneralResponse()
+        {
+            Data = entity,
+            StatusCode = System.Net.HttpStatusCode.OK,
+            Succeeded = true,
+            Message = Message ?? "Done Successfully"
+        };
+    }
+    public GeneralResponse ReturnUserData(object entity = null, string Token = null, string Message = null)
+    {
+        return new GeneralResponse()
+        {
+            Data = entity,
+            StatusCode = System.Net.HttpStatusCode.OK,
+            Succeeded = true,
+            Token = Token,
+            Message = Message ?? "Done Successfully"
+        };
+    }
     public GeneralResponse SuccessMessage(string Message = null)
     {
         return new GeneralResponse()
         {
             StatusCode = System.Net.HttpStatusCode.OK,
             Succeeded = true,
-            Message = Message
+            Message = Message ?? "Done Successfully"
         };
     }
 }

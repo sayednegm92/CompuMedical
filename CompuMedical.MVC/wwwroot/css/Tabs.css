@@ -1,0 +1,149 @@
+ * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 99%;
+            width: 100%;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        .tabs {
+            display: flex;
+            background: #6c5ce7;
+            position: relative;
+        }
+        
+        .tab-item {
+            flex: 1;
+            text-align: center;
+            padding: 18px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .tab-item i {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+        
+        .tab-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .tab-item.active {
+            color: #6c5ce7;
+        }
+        
+        .tab-indicator {
+            position: absolute;
+            height: 100%;
+            width: 20%;
+            background: white;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            z-index: 1;
+        }
+        
+        .tab-content {
+            padding: 30px;
+        }
+        
+        .tab-pane {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .tab-pane.active {
+            display: block;
+        }
+        
+        .tab-pane h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+        
+        .tab-pane p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .tab-pane ul {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .tab-pane li {
+            margin-bottom: 8px;
+            color: #555;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: #6c5ce7;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background: #5245c5;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3);
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab-indicator {
+                display: none;
+            }
+            
+            .tab-item {
+                padding: 15px;
+                text-align: left;
+            }
+            
+            .tab-item.active {
+                background: white;
+                color: #6c5ce7;
+            }
+        }

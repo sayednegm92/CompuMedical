@@ -18,5 +18,6 @@ public class GetInvoicesDto
     public decimal? Taxes { get; set; }
     public Guid? StoreId { get; set; }
     public decimal? Net => TotalAmount + (Taxes ?? 0);
+    public DateTime? CreatedDate { get; set; }
 
 }

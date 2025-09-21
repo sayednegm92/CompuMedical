@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CompuMedical.Application.Dto.Store;
 using CompuMedical.Application.Helper;
+using CompuMedical.Application.IServices.IStores;
 using CompuMedical.Core.Entities;
 using CompuMedical.Core.IBasRepository;
 
@@ -30,6 +31,13 @@ public class StoreServices : IStoreServices
         var storeMapper = _mapper.Map<Store>(dto);
         var result = await _storeRepo.AddAsync(storeMapper);
         return _responseHandler.SuccessMessage("Item Added Successfully ");
+    }
+
+    public async Task<GeneralResponse> GetStores()
+    {
+        var query = await _storeRepo.GetAllAsync(s => s.IsDeleted == false);
+        var result = _mapper.Map<IEnumerable<GetStoreDto>>(query);
+        return _responseHandler.Success(result);
     }
     #endregion
 }

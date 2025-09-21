@@ -1,4 +1,8 @@
 ﻿using CompuMedical.Application.Helper;
+using CompuMedical.Application.IServices.IAuthServices;
+using CompuMedical.Application.IServices.IInvoices;
+using CompuMedical.Application.IServices.IProducts;
+using CompuMedical.Application.IServices.IStores;
 using CompuMedical.Application.Services.AuthServices;
 using CompuMedical.Application.Services.Invoices;
 using CompuMedical.Application.Services.Products;

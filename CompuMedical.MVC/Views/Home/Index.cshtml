@@ -1,0 +1,305 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+    <link rel="stylesheet" href="~/css/Auth.css" asp-append-version="true" />
+<body>
+    <div class="container">
+        <div class="form-toggle">
+            <div class="toggle-btn active" id="login-toggle">Login</div>
+            <div class="toggle-btn" id="signup-toggle">Sign Up</div>
+        </div>
+        
+        <div class="forms-container">
+            <!-- Login Form -->
+            <div class="form-section" id="login-section">
+                <div class="form-header">
+                    <h2>Welcome Back</h2>
+                    <p>Sign in to continue to your account</p>
+                </div>
+                
+                <div id="login-form">
+                    <div class="form-group">
+                        <label for="user-name">User Name</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="user-name" placeholder="Enter your User Name" required>
+                        </div>
+        
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="login-password" placeholder="Enter your password" required>
+                            <span class="password-toggle" id="login-password-toggle">
+                                <i class="fas fa-eye"></i>
+                            </span>
+                        </div>
+                        <div class="error-message" id="login-password-error">Password must be at least 8 characters</div>
+                    </div>
+                    
+                    <button type="button" class="submit-btn" onclick="Login();">Login</button>
+                </div>
+                <div class="switch-form">
+                    Don't have an account? <a id="switch-to-signup">Sign Up</a>
+                </div>
+            </div>
+            
+            <!-- Signup Form -->
+            <div class="form-section" id="signup-section">
+                <div class="form-header">
+                    <h2>Create Account</h2>
+                    <p>Sign up to get started with our platform</p>
+                </div>
+                
+                <div id="signup-form">
+                    <div class="form-group">
+                        <label for="signup-name">User Name</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-user"></i>
+                            <input type="text" id="signup-name" placeholder="Enter your User name" required>
+                        </div>
+                        <div class="error-message" id="signup-name-error">Please enter your User name</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="signup-email">Email Address</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="signup-email" placeholder="Enter your email" required>
+                        </div>
+                        <div class="error-message" id="signup-email-error">Please enter a valid email address</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="signup-password">Password</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="signup-password" placeholder="Create a password" required>
+                            <span class="password-toggle" id="signup-password-toggle">
+                                <i class="fas fa-eye"></i>
+                            </span>
+                        </div>
+                        <div class="error-message" id="signup-password-error">Password must be at least 8 characters with uppercase, lowercase, and number</div>
+                    </div>
+                    <button type="button" class="submit-btn" onclick="Signup();">Create Account</button>
+                </div>
+                <div class="switch-form">
+                    Already have an account? <a id="switch-to-login">Login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function() {
+                 // Toggle between login and signup forms
+            $('#switch-to-signup').click(function() {
+                $('#login-toggle').removeClass('active');
+                $('#signup-toggle').addClass('active');
+                $('.forms-container').css('transform', 'translateX(-100%)');
+            });
+            
+            $('#switch-to-login').click(function() {
+                $('#signup-toggle').removeClass('active');
+                $('#login-toggle').addClass('active');
+                $('.forms-container').css('transform', 'translateX(0)');
+            });
+            
+            $('#login-toggle').click(function() {
+                $(this).addClass('active');
+                $('#signup-toggle').removeClass('active');
+                $('.forms-container').css('transform', 'translateX(0)');
+            });
+            
+            $('#signup-toggle').click(function() {
+                $(this).addClass('active');
+                $('#login-toggle').removeClass('active');
+                $('.forms-container').css('transform', 'translateX(-100%)');
+            });
+            
+            // Toggle password visibility
+            $('.password-toggle').click(function() {
+                const input = $(this).siblings('input');
+                const icon = $(this).children('i');
+                
+                if (input.attr('type') === 'password') {
+                    input.attr('type', 'text');
+                    icon.removeClass('fa-eye').addClass('fa-eye-slash');
+                } else {
+                    input.attr('type', 'password');
+                    icon.removeClass('fa-eye-slash').addClass('fa-eye');
+                }
+            });
+            
+            // Form validation
+            $('#login-form').submit(function(e) {
+                e.preventDefault();
+                let isValid = true;
+                
+                // Email validation
+                const loginEmail = $('#login-email').val();
+                if (!validateEmail(loginEmail)) {
+                    $('#login-email-error').show();
+                    isValid = false;
+                } else {
+                    $('#login-email-error').hide();
+                }
+                
+                // Password validation
+                const loginPassword = $('#login-password').val();
+                if (loginPassword.length < 8) {
+                    $('#login-password-error').show();
+                    isValid = false;
+                } else {
+                    $('#login-password-error').hide();
+                }
+                
+                if (isValid) {
+                    // Simulate form submission
+                    $('.submit-btn').html('<i class="fas fa-spinner fa-spin"></i> Processing...');
+                    setTimeout(function() {
+                        alert('Login successful!');
+                        $('.submit-btn').html('Login');
+                    }, 1500);
+                }
+            });
+            
+            $('#signup-form').submit(function(e) {
+                e.preventDefault();
+                let isValid = true;
+                
+                // Name validation
+                const signupName = $('#signup-name').val();
+                if (signupName.trim() === '') {
+                    $('#signup-name-error').show();
+                    isValid = false;
+                } else {
+                    $('#signup-name-error').hide();
+                }
+                
+                // Email validation
+                const signupEmail = $('#signup-email').val();
+                if (!validateEmail(signupEmail)) {
+                    $('#signup-email-error').show();
+                    isValid = false;
+                } else {
+                    $('#signup-email-error').hide();
+                }
+                
+                // Password validation
+                const signupPassword = $('#signup-password').val();
+                if (!validatePassword(signupPassword)) {
+                    $('#signup-password-error').show();
+                    isValid = false;
+                } else {
+                    $('#signup-password-error').hide();
+                }
+                
+                // Confirm password validation
+                const signupConfirmPassword = $('#signup-confirm-password').val();
+                if (signupPassword !== signupConfirmPassword) {
+                    $('#signup-confirm-password-error').show();
+                    isValid = false;
+                } else {
+                    $('#signup-confirm-password-error').hide();
+                }
+                
+                // Terms agreement validation
+                if (!$('#terms-agree').is(':checked')) {
+                    alert('Please agree to the Terms and Conditions');
+                    isValid = false;
+                }
+                
+                if (isValid) {
+                    // Simulate form submission
+                    $('.submit-btn').html('<i class="fas fa-spinner fa-spin"></i> Creating Account...');
+                    setTimeout(function() {
+                        alert('Account created successfully!');
+                        $('.submit-btn').html('Create Account');
+                        
+                        // Switch to login form
+                        $('#switch-to-login').click();
+                    }, 1500);
+                }
+            });
+            
+        });
+            $('input').on('input', function() {
+                const errorElement = $('#' + this.id + '-error');
+                if (errorElement) {
+                    errorElement.hide();
+                }
+            });
+
+          // Helper functions for validation
+ 
+            function validatePassword(password) {
+                const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+                return re.test(password);
+            };
+            function Login() {
+                debugger;
+                let dto={};
+                let email = $('#user-name').val();
+               let password = $('#login-password').val();
+               dto.UserName=email;
+               dto.Password=password;
+               $.ajax({
+                        url: '/Home/Login',
+                        type: "POST",
+                        data: JSON.stringify(dto),
+                        contentType: "application/json",
+                        traditional: true,
+                        success: function (res) {
+                            if (res.succeeded) {
+                                  window.location.href = '/Invoice/Index';
+                            }
+                             else {
+                              showSwalAlert(res.message,2);
+                            }
+                        },
+                        error:function (xhr, status, error) {
+                            let errors=xhr.responseText +',' +error
+                               showSwalAlert(errors, 3);
+                            return false;
+                        }
+                    });
+                };
+            function Signup() {
+                debugger;
+                let dto={};
+                let userName = $('#signup-name').val();
+                let email = $('#signup-email').val();
+                let password = $('#signup-password').val();
+
+                dto.UserName=userName;
+                dto.Email=email;
+                dto.Password=password;
+                $.ajax({
+                            url: '/Home/Register',
+                            type: "POST",
+                            data: JSON.stringify(dto),
+                            contentType: "application/json",
+                            traditional: true,
+                            success: function (res) {
+                                if (res.succeeded) {
+                                    window.location.href = '/Invoice/Index';
+                                }
+                                else {
+                                showSwalAlert(res.message,2);
+                                }
+                            },
+                            error:function (xhr, status, error) {
+                                let errors=xhr.responseText +',' +error
+                                showSwalAlert(errors, 3);
+                                return false;
+                            }
+                        });
+                };
+    </script>
+    }
+

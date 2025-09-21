@@ -1,7 +1,7 @@
 ﻿using CompuMedical.Application.Dto.Invoice;
 using CompuMedical.Application.Helper;
 
-namespace CompuMedical.Application.Services.Invoices;
+namespace CompuMedical.Application.IServices.IInvoices;
 
 public interface IInvoiceServices
 {

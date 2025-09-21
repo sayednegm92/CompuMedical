@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Services\Items\**" />
+    <EmbeddedResource Remove="Services\Items\**" />
+    <None Remove="Services\Items\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.20" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.20" />
@@ -26,10 +32,6 @@
   <ItemGroup>
     <ProjectReference Include="..\CompuMedical.Core\CompuMedical.Core.csproj" />
     <ProjectReference Include="..\CompuMedical.Infrastructure\CompuMedical.Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Services\Items\" />
   </ItemGroup>
 
 </Project>
