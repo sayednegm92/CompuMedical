@@ -43,10 +43,18 @@ public class InvoiceServices : IInvoiceServices
     public async Task<GeneralResponse> GetAllInvoices(Creteria request)
     {
         IEnumerable<Invoice> query;
-        if (request.StoreId == null && request.InvoiceId == null && request.InvoiceDate == null) query = await _invoiceRepo.GetAllAsync();
+        DateTime startDate = new DateTime();
+        DateTime endDate = new DateTime();
+        if (request != null && request.InvoiceDate != null)
+        {
+            startDate = request.InvoiceDate.Value.Date;
+            endDate = startDate.AddDays(1);
+        }
+
+        if (request == null || (request.StoreId == null && request.InvoiceId == null && request.InvoiceDate == null)) query = await _invoiceRepo.GetAllAsync();
 
         else query = await _invoiceRepo.GetAllAsync(o => (o.Id == request.InvoiceId ||
-                                         o.CreatedDate == request.InvoiceDate ||
+                                         (o.CreatedDate >= startDate && o.CreatedDate < endDate) ||
                                          o.StoreId == request.StoreId) && o.IsDeleted == false);
         if (query == null || !query.Any())
             return _responseHandler.ShowMessage("No Invoices Found.");

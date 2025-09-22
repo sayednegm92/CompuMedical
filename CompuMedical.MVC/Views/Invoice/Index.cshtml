@@ -127,12 +127,14 @@
 
     <script>
         $(document).ready(function () {
-            $('#datepicker').datepicker({
-                format: 'dd/mm/yyyy',
-                autoclose: true,
-                todayHighlight: true
-            });
+          $("#datepicker").datepicker();
         });
+        $("#datepicker").datepicker({
+            dateFormat: "yy-mm-dd", 
+            minDate: new Date(new Date().setFullYear(new Date().getFullYear() - 1)), 
+            maxDate: "+1M"
+        });
+
         function GetAllInvoices() {
             debugger;
               let dto = {};
@@ -142,9 +144,9 @@
             dto.InvoiceDate = invoiceDate;
 
             $.ajax({
-                type: "GET",
-                data:dto ,
                 url: "/Invoice/SearchInvoices",
+                type: "GET",
+                data:dto,
                 contentType: "application/json",
                 traditional: true,
                 dataType: "html",

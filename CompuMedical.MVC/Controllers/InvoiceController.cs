@@ -31,8 +31,9 @@ public class InvoiceController : Controller
         return View();
     }
     [HttpGet]
-    public async Task<IActionResult> SearchInvoices([FromQuery] Creteria dto)
+    public async Task<IActionResult> SearchInvoices(Creteria dto)
     {
+        if (dto == null) return BadRequest("Please Enter Data !");
         IEnumerable<GetInvoicesDto> data = new List<GetInvoicesDto>();
 
         var result = await _invoiceService.GetAllInvoices(dto);
