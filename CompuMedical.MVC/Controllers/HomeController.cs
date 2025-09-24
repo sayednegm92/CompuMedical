@@ -15,7 +15,6 @@ public class HomeController : Controller
         _logger = logger;
         _httpContextAccessor = httpContextAccessor;
         _service = service;
-
     }
 
     public IActionResult Index()
@@ -33,7 +32,7 @@ public class HomeController : Controller
         var result = await _service.Login(dto);
         if (result != null && result.Token != null)
         {
-            _httpContextAccessor.HttpContext?.Response.SetCookie("JWToken", result.Token, 60); // store 60 mins
+            _httpContextAccessor.HttpContext?.Response.SetCookie("AuthToken", result.Token, 60); // store 60 mins
 
         }
         return Ok(result);

@@ -43,15 +43,15 @@ public class InvoiceServices : IInvoiceServices
     public async Task<GeneralResponse> GetAllInvoices(Creteria request)
     {
         IEnumerable<Invoice> query;
-        DateTime startDate = new DateTime();
-        DateTime endDate = new DateTime();
+        var startDate = new DateTime();
+        var endDate = new DateTime();
         if (request != null && request.InvoiceDate != null)
         {
             startDate = request.InvoiceDate.Value.Date;
             endDate = startDate.AddDays(1);
         }
 
-        if (request == null || (request.StoreId == null && request.InvoiceId == null && request.InvoiceDate == null)) query = await _invoiceRepo.GetAllAsync();
+        if (request == null || (request.StoreId == null && request.InvoiceId == null && request.InvoiceDate == null)) query = await _invoiceRepo.GetAllAsync(o => o.IsDeleted == false);
 
         else query = await _invoiceRepo.GetAllAsync(o => (o.Id == request.InvoiceId ||
                                          (o.CreatedDate >= startDate && o.CreatedDate < endDate) ||
@@ -77,7 +77,7 @@ public class InvoiceServices : IInvoiceServices
         var entity = await _invoiceRepo.GetByIdAsync(id);
         if (entity == null) return _responseHandler.ErrorMessage("Invoice Not Found !");
         await _invoiceRepo.DeleteAsync(entity);
-        return _responseHandler.ShowMessage("Invoice Delete Successfully ");
+        return _responseHandler.Success("Invoice Delete Successfully");
     }
 
     #endregion

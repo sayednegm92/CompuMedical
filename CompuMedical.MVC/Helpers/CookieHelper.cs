@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
-
-namespace CompuMedical.MVC.Helpers;
+﻿namespace CompuMedical.MVC.Helpers;
 
 public static class CookieHelper
 {
@@ -14,7 +11,7 @@ public static class CookieHelper
         else
             option.Expires = DateTime.Now.AddHours(1); // default 1 hour
 
-        option.HttpOnly = true; // protect from JS access (XSS)
+        option.HttpOnly = false; // protect from JS access (XSS)
         option.Secure = true;   // only HTTPS
 
         response.Cookies.Append(key, value, option);

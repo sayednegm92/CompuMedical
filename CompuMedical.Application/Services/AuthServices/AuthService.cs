@@ -43,8 +43,7 @@ public class AuthService : IAuthService
             {
                 Id = user.Id.ToString(),
                 Username = user.UserName,
-                Email = user.Email,
-                Token = Token
+                Email = user.Email
             };
             return _responseHandler.ReturnUserData(Response, Token);
 

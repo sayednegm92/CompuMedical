@@ -6,6 +6,7 @@ using CompuMedical.Application.Helper;
 using CompuMedical.Application.IServices.IInvoices;
 using CompuMedical.Application.IServices.IProducts;
 using CompuMedical.Application.IServices.IStores;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CompuMedical.MVC.Controllers;
@@ -31,8 +32,10 @@ public class InvoiceController : Controller
         return View();
     }
     [HttpGet]
+    [Authorize(Roles = "user,superadmin")]
     public async Task<IActionResult> SearchInvoices(Creteria dto)
     {
+
         if (dto == null) return BadRequest("Please Enter Data !");
         IEnumerable<GetInvoicesDto> data = new List<GetInvoicesDto>();
 
@@ -45,6 +48,7 @@ public class InvoiceController : Controller
         return View(data);
     }
     [HttpGet]
+    [Authorize(Roles = "user,superadmin")]
     public async Task<IActionResult> InvoiceDetails(Guid InvoiceId)
     {
         IEnumerable<GetItemDto> data = new List<GetItemDto>();
@@ -57,10 +61,18 @@ public class InvoiceController : Controller
         return View(data);
     }
     [HttpPost]
+    [Authorize(Roles = "user,superadmin")]
     public async Task<IActionResult> SaveInvoice([FromBody] InvoiceDto dto)
     {
         if (dto == null) return BadRequest("Please Enter Data !");
         var result = await _invoiceService.CreateNewInvoice(dto);
+        return Ok(result);
+    }
+    [HttpDelete]
+    [Authorize(Roles = "superadmin")]
+    public async Task<IActionResult> DeleteInvoice(Guid id)
+    {
+        var result = await _invoiceService.DeleteInvoice(id);
         return Ok(result);
     }
     #region DropDwons

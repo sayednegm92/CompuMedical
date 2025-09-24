@@ -135,21 +135,25 @@
             maxDate: "+1M"
         });
 
-        function GetAllInvoices() {
+      async function GetAllInvoices() {
             debugger;
               let dto = {};
+            let token = getCookie("AuthToken");
             let invoiceId=$('#InvoiceNo').val();
             let invoiceDate = $('#datepicker').val();
             dto.InvoiceId = invoiceId;
             dto.InvoiceDate = invoiceDate;
-
-            $.ajax({
+     
+             $.ajax({
                 url: "/Invoice/SearchInvoices",
                 type: "GET",
                 data:dto,
                 contentType: "application/json",
                 traditional: true,
                 dataType: "html",
+                headers: {
+                    "Authorization": "Bearer " + token
+                   },
                 success: function (response) {
                     $('#AllInvoicesDiv').html("").append(response);
                 },
@@ -173,12 +177,8 @@
                     data: {},
                     dataType: 'json',
                     success: function (response) {
-                    let data=response;
-                    let items = '<option value="0">--Choose-- </option>';
-                     for (let i = 0; i < data.length; i++) {
-                         items += `<option value="${data[i].id}" name="${data[i].name}">${data[i].name}</option>`;
-                         }
-                        $("#slStore").html(items);
+                    BindStores(response);
+                    if(data.length==0) showSwalAlert('No Stores Available',2);
                     },
                     failure: function (response) {
                         showSwalAlert(response.responseText,3);
@@ -188,8 +188,14 @@
                     }
                 });
            isStoreLoaded=false;
-           
         };
+      function BindStores(data) {
+           let items = '<option value="0">--Choose-- </option>';
+           for (let i = 0; i < data.length; i++) {
+               items += `<option value="${data[i].id}" name="${data[i].name}">${data[i].name}</option>`;
+           }
+          $("#slStore").html(items);    
+         };
      $("#slStore").on("change", function () {
           GetItems();
      });
@@ -235,7 +241,6 @@
                 return true;
             };
       $('#addRowBtn').on('click',function () {
-             debugger;
              loadUnits();
          });
             function loadUnits() {
@@ -289,7 +294,7 @@
 	
                 </tr>`;
                 $('#InvoiceItemsTbody').append(NewRow);
-                   for (let i = 0; i < unitData.length; i++) { items += `<option value="${unitData[i].id}">${unitData[i].name}</option>`;}
+                   for (let i = 0; i < unitData.length; i++) { items += `<option value="${unitData[i].id}" name=${unitData[i].name}>${unitData[i].name}</option>`;}
                     $('#InvoiceItemsTbody').find('select.UnitCalss:last').html(items);
                     $('#slItem').val('');
                     $('#Quantity').val('');
@@ -350,7 +355,9 @@
                 $('#TaxAmount').val(taxAmount.toFixed(2));
                 $('#NetAmount').val(grandTotal.toFixed(2));
                 return false;
-            }; 
+            };
+
+ 
         function SaveInvoiceItems() {
                 debugger;
                 let invoiceDto = {};
@@ -359,6 +366,7 @@
                 let storeId = $('#slStore').val();
                 let Taxes= parseFloat($('#TaxAmount').val()) || 0;
                 let TotalAmount= parseFloat($('#TotalAmount').val()) || 0;
+               // const token = getCookie("JWToken"); 
 
                 if (storeId == 0) {
                     showSwalAlert('Please Select Store',2);
@@ -375,7 +383,7 @@
                     let row = $(this);
                     let itemId = row.attr('itemId');
                     let itemName = row.attr('itemName');
-                    let unitId = row.find('td .UnitCalss').val();
+                    let unitId = row.find('td .UnitCalss').find('option:selected').attr("name");
                     let price = parseFloat(row.find('td .price').val()) || 0;
                     let quantity = parseFloat(row.find('td .quantity').val()) || 0;
                     let total = parseFloat(row.find('td .total').val()) || 0;
@@ -401,6 +409,7 @@
           invoiceDto.Taxes=Taxes;
           invoiceDto.TotalAmount=TotalAmount;
           invoiceDto.Items=invoiceItems;
+        
                 $.ajax({
                     type: "POST",
                     url: '/Invoice/SaveInvoice',
@@ -414,11 +423,13 @@
                         }
                     },
                     failure: function (response) {
-                        showSwalAlert(response.responseText,3);
+                       showSwalAlert(response.responseText,3);
                     },
-                    error: function (response) {
-                        showSwalAlert(response.responseText,3);
-                    }
+                    error:function (xhr, status, error) {
+                            let errors=xhr.responseText +',' +error
+                               showSwalAlert(errors, 3);
+                            return false;
+                        }
                 });
             };      
         
