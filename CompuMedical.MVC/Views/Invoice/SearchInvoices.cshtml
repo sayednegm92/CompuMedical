@@ -73,6 +73,7 @@
       debugger
       let tr = $(src).closest("tr");
       let InvoiceId = tr.attr("InvoiceId");
+      let token = getCookie("AuthToken");
       $("#dynamicModal").modal("show");
 
       $.ajax({
@@ -80,6 +81,9 @@
         // data:InvoiceId ,
         url: "/Invoice/InvoiceDetails?invoiceId=" + InvoiceId,
         contentType: "application/json",
+         headers: {
+              "Authorization": "Bearer " + token
+       },
         traditional: true,
         dataType: "html",
         success: function (response) {

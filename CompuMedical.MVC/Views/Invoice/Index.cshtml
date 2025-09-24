@@ -366,7 +366,7 @@
                 let storeId = $('#slStore').val();
                 let Taxes= parseFloat($('#TaxAmount').val()) || 0;
                 let TotalAmount= parseFloat($('#TotalAmount').val()) || 0;
-               // const token = getCookie("JWToken"); 
+                const token = getCookie("JWToken"); 
 
                 if (storeId == 0) {
                     showSwalAlert('Please Select Store',2);
@@ -415,6 +415,9 @@
                     url: '/Invoice/SaveInvoice',
                     data: JSON.stringify(invoiceDto),
                     contentType: "application/json",
+                    headers: {
+                          "Authorization": "Bearer " + token
+                     },
                     dataType: 'json',
                     success: function (res) {
                         if (res.succeeded) {
