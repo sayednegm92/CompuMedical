@@ -39,7 +39,7 @@ public class AuthService : IAuthService
         {
             var Token = await CreateJWTToken(user);
 
-            var Response = new UserResponseDto
+            var Response = new UserDto
             {
                 Id = user.Id.ToString(),
                 Username = user.UserName,
@@ -57,7 +57,7 @@ public class AuthService : IAuthService
         else
         {
 
-            var Response = new UserResponseDto
+            var Response = new UserDto
             {
                 Id = user.Id.ToString(),
                 Username = user.UserName,
@@ -104,15 +104,14 @@ public class AuthService : IAuthService
         }
 
         var Token = await CreateJWTToken(newUser);
-        var Response = new UserResponseDto
+        var Response = new UserDto
         {
             Id = newUser.Id.ToString(),
             Username = newUser.UserName,
             Email = newUser.Email,
-            Token = Token
         };
 
-        return _responseHandler.Success(Response);
+        return _responseHandler.Success(Response, Token);
     }
 
     public async Task<GeneralResponse> EditUser(UserRegisterDto request)

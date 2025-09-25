@@ -241,65 +241,64 @@
                 const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
                 return re.test(password);
             };
-            function Login() {
-                debugger;
-                let dto={};
-                let email = $('#user-name').val();
-               let password = $('#login-password').val();
-               dto.UserName=email;
-               dto.Password=password;
-               $.ajax({
-                        url: '/Home/Login',
-                        type: "POST",
-                        data: JSON.stringify(dto),
-                        contentType: "application/json",
-                        traditional: true,
-                        success: function (res) {
-                            if (res.succeeded) {
-                                  window.location.href = '/Invoice/Index';
-                            }
-                             else {
-                              showSwalAlert(res.message,2);
-                            }
-                        },
-                        error:function (xhr, status, error) {
-                            let errors=xhr.responseText +',' +error
-                               showSwalAlert(errors, 3);
-                            return false;
-                        }
-                    });
-                };
-            function Signup() {
-                debugger;
-                let dto={};
-                let userName = $('#signup-name').val();
-                let email = $('#signup-email').val();
-                let password = $('#signup-password').val();
+        async function Login() {
+            debugger;
+            let dto = {};
+            let email = $('#user-name').val();
+            let password = $('#login-password').val();
+            dto.UserName = email;
+            dto.Password = password;
 
-                dto.UserName=userName;
-                dto.Email=email;
-                dto.Password=password;
-                $.ajax({
-                            url: '/Home/Register',
-                            type: "POST",
-                            data: JSON.stringify(dto),
-                            contentType: "application/json",
-                            traditional: true,
-                            success: function (res) {
-                                if (res.succeeded) {
-                                    window.location.href = '/Invoice/Index';
-                                }
-                                else {
-                                showSwalAlert(res.message,2);
-                                }
-                            },
-                            error:function (xhr, status, error) {
-                                let errors=xhr.responseText +',' +error
-                                showSwalAlert(errors, 3);
-                                return false;
-                            }
-                        });
-                };
+            try {
+                const res = await apiRequest("POST", '/Home/Login', dto, 'json');
+                if (res && res.error) {
+                    showSwalAlert(res.error, 3);
+                    return false;
+                }
+                else if (res.succeeded) {
+                    window.location.href = '/Invoice/Index';
+                }
+                else {
+                    const message = res?.message || 'Login failed.';
+                    showSwalAlert(message, 2);
+                }
+
+            }
+            catch (err) {
+                showSwalAlert(err, 3);
+            }
+
+        };
+        async function Signup() {
+            debugger;
+            let dto = {};
+            let userName = $('#signup-name').val();
+            let email = $('#signup-email').val();
+            let password = $('#signup-password').val();
+
+            dto.UserName = userName;
+            dto.Email = email;
+            dto.Password = password;
+            try {
+                const res = await apiRequest("POST", '/Home/Register', dto, 'json');
+                if (res && res.error) {
+                    showSwalAlert(res.error, 3);
+                    return false;
+                }
+                else if (res.succeeded) {
+                    window.location.href = '/Invoice/Index';
+                }
+                else {
+                    const message = res?.message || 'Sign up failed.';
+                    showSwalAlert(message, 2);
+                }
+
+            }
+            catch (err) {
+                showSwalAlert(err, 3);
+            }
+        };
+
     </script>
     }
 

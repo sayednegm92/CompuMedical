@@ -124,317 +124,272 @@
 
 @section Scripts {
     <script src="~/js/Tabs.js" asp-append-version="true"></script>
-
     <script>
+        let isStoreLoaded = true;
         $(document).ready(function () {
-          $("#datepicker").datepicker();
+            $("#datepicker").datepicker();
         });
         $("#datepicker").datepicker({
-            dateFormat: "yy-mm-dd", 
-            minDate: new Date(new Date().setFullYear(new Date().getFullYear() - 1)), 
+            dateFormat: "yy-mm-dd",
+            minDate: new Date(new Date().setFullYear(new Date().getFullYear() - 1)),
             maxDate: "+1M"
         });
 
-      async function GetAllInvoices() {
+        $("#slStore").on("click", function () {
+            if (isStoreLoaded) GetStores();
+        });
+        $("#slStore").on("change", function () {
+            GetItems();
+        });
+        async function GetAllInvoices() {
             debugger;
-              let dto = {};
-            let token = getCookie("AuthToken");
-            let invoiceId=$('#InvoiceNo').val();
+            let dto = {};
+            let invoiceId = $('#InvoiceNo').val();
             let invoiceDate = $('#datepicker').val();
             dto.InvoiceId = invoiceId;
             dto.InvoiceDate = invoiceDate;
-     
-             $.ajax({
-                url: "/Invoice/SearchInvoices",
-                type: "GET",
-                data:dto,
-                contentType: "application/json",
-                traditional: true,
-                dataType: "html",
-                headers: {
-                    "Authorization": "Bearer " + token
-                   },
-                success: function (response) {
-                    $('#AllInvoicesDiv').html("").append(response);
-                },
-                error: function (xhr, status, error) {
-                    let errors = xhr.responseText + ',' + error
-                    showSwalAlert(errors, 3);
-                    return false;
-                }
-            });
-        };
 
-     let isStoreLoaded=true;
-     $("#slStore").on("click", function () {
-        if(isStoreLoaded)GetStores();
-     });
-       function GetStores(){
-            debugger;
-                 $.ajax({
-                    type: "GET",
-                    url: '/Invoice/GetStores',
-                    data: {},
-                    dataType: 'json',
-                    success: function (response) {
-                    BindStores(response);
-                    if(data.length==0) showSwalAlert('No Stores Available',2);
-                    },
-                    failure: function (response) {
-                        showSwalAlert(response.responseText,3);
-                    },
-                    error: function (response) {
-                        showSwalAlert(response.responseText,3);
-                    }
-                });
-           isStoreLoaded=false;
+            try {
+                const response = await apiRequest("GET", '/Invoice/SearchInvoices', dto, 'html');
+                $('#AllInvoicesDiv').html("").append(response);
+            }
+            catch (err) {
+                showSwalAlert(err, 3);
+            }
         };
-      function BindStores(data) {
-           let items = '<option value="0">--Choose-- </option>';
-           for (let i = 0; i < data.length; i++) {
-               items += `<option value="${data[i].id}" name="${data[i].name}">${data[i].name}</option>`;
-           }
-          $("#slStore").html(items);    
-         };
-     $("#slStore").on("change", function () {
-          GetItems();
-     });
-     function GetItems(){
+        async function GetStores() {
             debugger;
-            let StoreId=$("#slStore").val();
-                 $.ajax({
-                    type: "GET",
-                    url: '/Invoice/GetProducts?storeId='+StoreId,
-                    data: {},
-                    dataType: 'json',
-                    success: function (response) {
-                    let data=response;
-                    let items = '<option value="0">--Choose-- </option>';
-                     for (let i = 0; i < data.length; i++) {
-                         items += `<option value="${data[i].id}" id="${data[i].id}" name="${data[i].name}" quantity="${data[i].quantity}" unitPrice="${data[i].unitPrice}">${data[i].name}</option>`;
-                         }
-                        $("#slItem").html(items);
-                    },
-                    failure: function (response) {
-                        showSwalAlert(response.responseText,3);
-                    },
-                    error: function (response) {
-                        showSwalAlert(response.responseText,3);
-                    }
-                });
+            try {
+                const response = await apiRequest("GET", '/Invoice/GetStores');
+                BindStores(response);
+                isStoreLoaded = false;
+            }
+            catch (err) {
+                showSwalAlert(err, 3);
+            }
 
         };
+        function BindStores(data) {
+            let stores = '<option value="0">--Choose-- </option>';
+            for (let i = 0; i < data.length; i++) {
+                stores += `<option value="${data[i].id}" name="${data[i].name}">${data[i].name}</option>`;
+            }
+            $("#slStore").html(stores);
+        };
+
+        async function GetItems() {
+            debugger;
+            let StoreId = $("#slStore").val();
+            try {
+                const response = await apiRequest("GET", '/Invoice/GetProducts?storeId=' + StoreId);
+                BindItems(response);
+            }
+            catch (err) {
+                showSwalAlert(err, 3);
+            }
+        };
+        function BindItems(data) {
+            debugger;
+            let items = '<option value="0">--Choose-- </option>';
+            for (let i = 0; i < data.length; i++) {
+                items += `<option value="${data[i].id}" id="${data[i].id}" name="${data[i].name}" quantity="${data[i].quantity}" unitPrice="${data[i].unitPrice}">${data[i].name}</option>`;
+            }
+            $("#slItem").html(items);
+        }
+
         function changeQuantity() {
-                debugger;
-                let quantity = $('#Quantity').val();
-                let itemQYT = $('#slItem').find('option:selected').attr("quantity");
-                if ($('#Quantity').val()==''||quantity <= 0) {
-                    showSwalAlert('Quantity Must be Positive Number',2);
-                    $('#Quantity').val('');
-                    return false;
-                }
-                if (parseInt(quantity) > parseInt(itemQYT)) {
-                    showSwalAlert('Quantity Must be Less than Available Quantity',2);
-                    $('#Quantity').val('');
-                    return false;
-                }
-                return true;
-            };
-      $('#addRowBtn').on('click',function () {
-             loadUnits();
-         });
-            function loadUnits() {
-                debugger;
-                      $.ajax({
-                    type: "GET",
-                    url: '/Invoice/GetProductUnits',
-                    data: {},
-                    dataType: 'json',
-                    success: function (response) {
-                       AddNewInvoiceItem(response);
-                    },
-                    failure: function (response) {
-                        showSwalAlert(response.responseText,3);
-                    },
-                    error: function (response) {
-                        showSwalAlert(response.responseText,3);
-                    }
-                });
-            };
-     function AddNewInvoiceItem(unitData) {
             debugger;
-                let QTY=0;
-                let itemSelected ='';
-                let items = '';
-                let NewRow = '';
-                 let total= 0;
-                 let net= 0;
-                QTY=$('#Quantity').val();
-                itemSelected = $('#slItem').find('option:selected');
-               if (QTY==''||QTY<=0) {
-                    showSwalAlert('Quantity Must be Positive Number',2);
-                    $('#Quantity').val('');
-                    return false;
-                }
-                 total= itemSelected.attr("unitPrice") * QTY;
-                 net=total;
-                if (itemSelected != '' && itemSelected.val() != 0 && QTY>0) {
-                 NewRow = ` 
-                 <tr class="ItemRow"  Buffer_Status="1" itemId="${itemSelected.val()}" itemName="${itemSelected.attr("name")}">
-                  <td> 
-                    <i onclick="deleteRow(this);" class="fas fa-trash-alt delete-btn"  style='font-size:25px;color:red;cursor: pointer;' title="Delete Item"></i>
-                  </td>
-                 <td><input type="text" class="form-control itemName" value="${itemSelected.attr("name")}" disabled></td>
-                 <td><select class="form-control input-lg UnitCalss" name="UnitId" id="slUnit"></select></td>
-                  <td><input type="text" class="form-control price" value="${itemSelected.attr("unitPrice")}" disabled></td>
-                  <td><input type="text" class="form-control quantity" value="${QTY}" disabled></td>
-                  <td><input type="text" class="form-control total" value="${total}" disabled></td>
-                  <td><input type="number" class="form-control discount" value="${0}" onchange="changeDiscount(this)"></td>
-                  <td><input type="text" class="form-control net" value="${net}" disabled></td>
+            let quantity = $('#Quantity').val();
+            let itemQYT = $('#slItem').find('option:selected').attr("quantity");
+            if ($('#Quantity').val() == '' || quantity <= 0) {
+                showSwalAlert('Quantity Must be Positive Number', 2);
+                $('#Quantity').val('');
+                return false;
+            }
+            if (parseInt(quantity) > parseInt(itemQYT)) {
+                showSwalAlert('Quantity Must be Less than Available Quantity', 2);
+                $('#Quantity').val('');
+                return false;
+            }
+            return true;
+        };
+        $('#addRowBtn').on('click', function () {
+            loadUnits();
+        });
+     async function loadUnits() {
+            debugger;
+           try {
+                const response = await apiRequest("GET",'/Invoice/GetProductUnits');
+                AddNewInvoiceItem(response);
+            }
+            catch (err) {
+                showSwalAlert(err, 3);
+            }
+     
+        };
+        function AddNewInvoiceItem(unitData) {
+            debugger;
+            let QTY = 0;
+            let itemSelected = '';
+            let items = '';
+            let NewRow = '';
+            let total = 0;
+            let net = 0;
+            QTY = $('#Quantity').val();
+            itemSelected = $('#slItem').find('option:selected');
+            if (QTY == '' || QTY <= 0) {
+                showSwalAlert('Quantity Must be Positive Number', 2);
+                $('#Quantity').val('');
+                return false;
+            }
+            total = itemSelected.attr("unitPrice") * QTY;
+            net = total;
+            if (itemSelected != '' && itemSelected.val() != 0 && QTY > 0) {
+                NewRow = ` 
+                     <tr class="ItemRow"  Buffer_Status="1" itemId="${itemSelected.val()}" itemName="${itemSelected.attr("name")}">
+                      <td> 
+                        <i onclick="deleteRow(this);" class="fas fa-trash-alt delete-btn"  style='font-size:25px;color:red;cursor: pointer;' title="Delete Item"></i>
+                      </td>
+                     <td><input type="text" class="form-control itemName" value="${itemSelected.attr("name")}" disabled></td>
+                     <td><select class="form-control input-lg UnitCalss" name="UnitId" id="slUnit"></select></td>
+                      <td><input type="text" class="form-control price" value="${itemSelected.attr("unitPrice")}" disabled></td>
+                      <td><input type="text" class="form-control quantity" value="${QTY}" disabled></td>
+                      <td><input type="text" class="form-control total" value="${total}" disabled></td>
+                      <td><input type="number" class="form-control discount" value="${0}" onchange="changeDiscount(this)"></td>
+                      <td><input type="text" class="form-control net" value="${net}" disabled></td>
 	
-                </tr>`;
+                    </tr>`;
                 $('#InvoiceItemsTbody').append(NewRow);
-                   for (let i = 0; i < unitData.length; i++) { items += `<option value="${unitData[i].id}" name=${unitData[i].name}>${unitData[i].name}</option>`;}
-                    $('#InvoiceItemsTbody').find('select.UnitCalss:last').html(items);
-                    $('#slItem').val('');
-                    $('#Quantity').val('');
-                }
-                else {
-                showSwalAlert('Please Enter the Empty Field',2);
-           
-                }
-                calculateTotals();
+                for (let i = 0; i < unitData.length; i++) { items += `<option value="${unitData[i].id}" name=${unitData[i].name}>${unitData[i].name}</option>`; }
+                $('#InvoiceItemsTbody').find('select.UnitCalss:last').html(items);
+                $('#slItem').val('');
+                $('#Quantity').val('');
+            }
+            else {
+                showSwalAlert('Please Enter the Empty Field', 2);
+
+            }
+            calculateTotals();
         };
         function changeDiscount(src) {
-                debugger;
-                let discount = $(src).val();
-                if (discount < 0) {
-                    showSwalAlert('Discount Must be Positive Number',2);
-                    $(src).val(0);
-                    discount = 0;
-                }
-                let row = $(src).closest('tr');
-                let price = parseFloat(row.find('td .price').val());
-                let quantity = parseFloat(row.find('td .quantity').val());
-                let total = price * quantity;
-                let net = total - discount;
-                if (net < 0) {
-                    showSwalAlert('Discount Must be Less than Total',2);
-                    $(src).val(0);
-                    net = total;
-                }
-                row.find('td .total').val(total);
-                row.find('td .net').val(net);
-                 calculateTotals();
-            };
-          function deleteRow(src) {
-                debugger;
-                    let row = $(src).closest('tr');
-                    row.remove();
-                    calculateTotals();
-              };  
-            function calculateTotals() {
-                debugger;
-                let total = 0;
-                let netTotal = 0;
-                 let taxRate = 0.14; // Example tax rate of 14%
-                 let taxAmount = 0;
-                 let grandTotal = 0;
-                $('#InvoiceItemsTbody tr').each(function () {
-                    let row = $(this);
-                    let rowTotal = parseFloat(row.find('td .total').val()) || 0;
-                    let rowNet = parseFloat(row.find('td .net').val()) || 0;
-                    total += rowTotal;
-                    netTotal += rowNet;
-                });
-                taxAmount = netTotal * taxRate;
-                grandTotal = netTotal + taxAmount;
+            debugger;
+            let discount = $(src).val();
+            if (discount < 0) {
+                showSwalAlert('Discount Must be Positive Number', 2);
+                $(src).val(0);
+                discount = 0;
+            }
+            let row = $(src).closest('tr');
+            let price = parseFloat(row.find('td .price').val());
+            let quantity = parseFloat(row.find('td .quantity').val());
+            let total = price * quantity;
+            let net = total - discount;
+            if (net < 0) {
+                showSwalAlert('Discount Must be Less than Total', 2);
+                $(src).val(0);
+                net = total;
+            }
+            row.find('td .total').val(total);
+            row.find('td .net').val(net);
+            calculateTotals();
+        };
+        function deleteRow(src) {
+            debugger;
+            let row = $(src).closest('tr');
+            row.remove();
+            calculateTotals();
+        };
+        function calculateTotals() {
+            debugger;
+            let total = 0;
+            let netTotal = 0;
+            let taxRate = 0.14; // Example tax rate of 14%
+            let taxAmount = 0;
+            let grandTotal = 0;
+            $('#InvoiceItemsTbody tr').each(function () {
+                let row = $(this);
+                let rowTotal = parseFloat(row.find('td .total').val()) || 0;
+                let rowNet = parseFloat(row.find('td .net').val()) || 0;
+                total += rowTotal;
+                netTotal += rowNet;
+            });
+            taxAmount = netTotal * taxRate;
+            grandTotal = netTotal + taxAmount;
 
-                $('#TotalAmount').val(total.toFixed(2));
-                $('#TotalAfterDisc').val(netTotal.toFixed(2));
-                $('#TaxAmount').val(taxAmount.toFixed(2));
-                $('#NetAmount').val(grandTotal.toFixed(2));
+            $('#TotalAmount').val(total.toFixed(2));
+            $('#TotalAfterDisc').val(netTotal.toFixed(2));
+            $('#TaxAmount').val(taxAmount.toFixed(2));
+            $('#NetAmount').val(grandTotal.toFixed(2));
+            return false;
+        };
+
+
+        async function SaveInvoiceItems() {
+            debugger;
+            let invoiceDto = {};
+            let invoiceItems = [];
+            let Items = [];
+            let storeId = $('#slStore').val();
+            let Taxes = parseFloat($('#TaxAmount').val()) || 0;
+            let TotalAmount = parseFloat($('#TotalAfterDisc').val()) || 0;
+            if (storeId == 0) {
+                showSwalAlert('Please Select Store', 2);
                 return false;
-            };
+            }
 
- 
-        function SaveInvoiceItems() {
-                debugger;
-                let invoiceDto = {};
-                let invoiceItems = [];
-                let Items = [];
-                let storeId = $('#slStore').val();
-                let Taxes= parseFloat($('#TaxAmount').val()) || 0;
-                let TotalAmount= parseFloat($('#TotalAmount').val()) || 0;
-                const token = getCookie("JWToken"); 
+            if ($('#InvoiceItemsTbody tr').length == 0) {
+                showSwalAlert('Please Add At Least One Item', 2);
+                return false;
+            }
 
-                if (storeId == 0) {
-                    showSwalAlert('Please Select Store',2);
+            $('#InvoiceItemsTbody tr').each(function () {
+                let obj = {};
+                let row = $(this);
+                let itemId = row.attr('itemId');
+                let itemName = row.attr('itemName');
+                let unitId = row.find('td .UnitCalss').find('option:selected').attr("name");
+                let price = parseFloat(row.find('td .price').val()) || 0;
+                let quantity = parseFloat(row.find('td .quantity').val()) || 0;
+                let total = parseFloat(row.find('td .total').val()) || 0;
+                let discount = parseFloat(row.find('td .discount').val()) || 0;
+                let net = parseFloat(row.find('td .net').val()) || 0;
+
+                if (itemId && unitId && quantity > 0) {
+                    obj.ProductId = itemId;
+                    obj.ItemName = itemName;
+                    obj.Unit = unitId;
+                    obj.UnitPrice = price;
+                    obj.Quantity = quantity;
+                    obj.Discount = discount;
+                    // obj.Total=total;
+                    // obj.Net=net;
+                    invoiceItems.push(obj);
+                }
+            });
+
+            invoiceDto.StoreId = storeId;
+            invoiceDto.Taxes = Taxes;
+            invoiceDto.TotalAmount = TotalAmount;
+            invoiceDto.Items = invoiceItems;
+
+            try {
+                const res = await apiRequest("POST", '/Invoice/SaveInvoice', invoiceDto, 'json');
+                if (res && res.error) {
+                    showSwalAlert(res.error, 3);
                     return false;
                 }
-               
-                 if ($('#InvoiceItemsTbody tr').length == 0) {
-                    showSwalAlert('Please Add At Least One Item',2);
-                    return false;
+                else if (res.succeeded) {
+                    showSwalAlert(res.message, 1);
+                    setTimeout(() => {
+                        window.location.href = '/Invoice/Index';
+                    },3000);
                 }
-           
-                $('#InvoiceItemsTbody tr').each(function () {
-                    let obj={};
-                    let row = $(this);
-                    let itemId = row.attr('itemId');
-                    let itemName = row.attr('itemName');
-                    let unitId = row.find('td .UnitCalss').find('option:selected').attr("name");
-                    let price = parseFloat(row.find('td .price').val()) || 0;
-                    let quantity = parseFloat(row.find('td .quantity').val()) || 0;
-                    let total = parseFloat(row.find('td .total').val()) || 0;
-                    let discount = parseFloat(row.find('td .discount').val()) || 0;
-                    let net = parseFloat(row.find('td .net').val()) || 0;
 
-                    if (itemId && unitId && quantity > 0) {
-                        obj.ProductId=itemId;
-                        obj.ItemName=itemName;
-                        obj.Unit=unitId;
-                        obj.UnitPrice=price;
-                        obj.Quantity=quantity;
-                        obj.Discount=discount;
-                       // obj.Total=total;
-                   
-                       // obj.Net=net;
+            }
+            catch (err) {
+                showSwalAlert(err, 3);
+            }
+        };
 
-                        invoiceItems.push(obj);
-                    }
-                });
-
-          invoiceDto.StoreId=storeId;
-          invoiceDto.Taxes=Taxes;
-          invoiceDto.TotalAmount=TotalAmount;
-          invoiceDto.Items=invoiceItems;
-        
-                $.ajax({
-                    type: "POST",
-                    url: '/Invoice/SaveInvoice',
-                    data: JSON.stringify(invoiceDto),
-                    contentType: "application/json",
-                    headers: {
-                          "Authorization": "Bearer " + token
-                     },
-                    dataType: 'json',
-                    success: function (res) {
-                        if (res.succeeded) {
-                            showSwalAlert('Invoice Saved Successfully',1);
-                            window.location.href = '/Invoice/Index';
-                        }
-                    },
-                    failure: function (response) {
-                       showSwalAlert(response.responseText,3);
-                    },
-                    error:function (xhr, status, error) {
-                            let errors=xhr.responseText +',' +error
-                               showSwalAlert(errors, 3);
-                            return false;
-                        }
-                });
-            };      
-        
     </script>
 }
