@@ -373,7 +373,7 @@
             invoiceDto.Items = invoiceItems;
 
             try {
-                const res = await apiRequest("POST", '/Invoice/SaveInvoice', invoiceDto, 'json');
+                const res = await apiRequest("POST", '/Invoice/SaveInvoice',JSON.stringify(invoiceDto), 'json');
                 if (res && res.error) {
                     showSwalAlert(res.error, 3);
                     return false;

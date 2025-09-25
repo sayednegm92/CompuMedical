@@ -14,16 +14,10 @@ function apiRequest(method, url, data = null,dataType = 'json') {
     debugger;
     return new Promise((resolve, reject) => {
         let token = getCookie("AuthToken");
-        if (!token) {
-            showSwalAlert('Authentication token not found. Please log in again.', 3);
-            reject("No token");
-            return;
-        }
-
         $.ajax({
             type: method,
             url: url,
-            data:data==null? null: JSON.stringify(data),
+            data:data==null? null: data,
             contentType: "application/json",
             headers: {
                 "Authorization": "Bearer " + token

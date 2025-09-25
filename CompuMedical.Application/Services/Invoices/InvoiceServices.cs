@@ -77,7 +77,7 @@ public class InvoiceServices : IInvoiceServices
         var entity = await _invoiceRepo.GetByIdAsync(id);
         if (entity == null) return _responseHandler.ErrorMessage("Invoice Not Found !");
         await _invoiceRepo.DeleteAsync(entity);
-        return _responseHandler.Success("Invoice Delete Successfully");
+        return _responseHandler.ShowMessage("Invoice Delete Successfully");
     }
 
     #endregion

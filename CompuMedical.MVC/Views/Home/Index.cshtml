@@ -250,7 +250,7 @@
             dto.Password = password;
 
             try {
-                const res = await apiRequest("POST", '/Home/Login', dto, 'json');
+                const res = await apiRequest("POST", '/Home/Login',JSON.stringify(dto), 'json');
                 if (res && res.error) {
                     showSwalAlert(res.error, 3);
                     return false;
@@ -280,7 +280,7 @@
             dto.Email = email;
             dto.Password = password;
             try {
-                const res = await apiRequest("POST", '/Home/Register', dto, 'json');
+                const res = await apiRequest("POST", '/Home/Register',JSON.stringify(dto), 'json');
                 if (res && res.error) {
                     showSwalAlert(res.error, 3);
                     return false;
